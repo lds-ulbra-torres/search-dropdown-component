@@ -23,16 +23,17 @@
 		var URLPattern = /((\w+:\/\/)[-a-zA-Z0-9:@;?&=\/%\+\.\*!'\(\),\$_\{\}\^~\[\]`#|]+)/g;
 		//Idioma padrão
 		var lang = "pt-BR"
-
+		
 		//Seleciona-se o esquema padrão de traduções da lib Select2
 		$.fn.select2.defaults.set('amdBase', 'select2/');
 		$.fn.select2.defaults.set('amdLanguageBase', 'select2/i18n/');
-
+		
 
 		//Teste para verficar se a fonto é uma URL ou outro tipo de string
 		if(URLPattern.test(src)){
 		
 			//Inicializa-se o componente <select> 
+			
 			this.select2({
 				//Idioma das mensagens do Select2, caso o arquivo de tradução brasileiro(pt-BR) esteja carregado,
 				//as mensagens aparecerão em português brasileiro.
@@ -41,13 +42,21 @@
 				//Placeholder padrão, que desaparecerá assim que a lista for carregada
 				placeholder:"Buscando..."
 			});
+		
 
 			//Desativa-se o select enquanto é esperada a resposta da requisição
 			this.prop('disabled',true);
 
 			//Requisição para feita à URL passada no parametro src
 			$.get(src, function( data ) {
-				
+				if(data instanceof String){
+					try{
+						data = $.parseJSON(data);
+					}catch(e){
+						console.error("Cannot parse the data from server ");
+						return;
+					}
+				}
 				//Adiciona-se ao objeto <select> o resultado da função renderOptionList()
 				obj.append(renderOptionList(data,key,text));
 
@@ -57,10 +66,12 @@
 			});
 
 		} else {
+			
 			//Mesmo processo da linha 36, com excessão do place holder que não se torna necessário aqui
 			this.select2({
 				language : lang
 			});
+		
 			//Desativa-se o objeto
 			this.prop('disabled',true);
 
