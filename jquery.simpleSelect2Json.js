@@ -49,7 +49,7 @@
 
 			//Requisição para feita à URL passada no parametro src
 			$.get(src, function( data ) {
-				if(data instanceof String){
+				if((typeof data)==="string"){
 					try{
 						data = $.parseJSON(data);
 					}catch(e){
